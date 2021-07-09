@@ -1,10 +1,13 @@
 package com.han.todo.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Data
@@ -14,7 +17,9 @@ public class ToDo {
     @NotNull
     @NotBlank
     private String description;
+    //@JsonFormat(pattern = "yyyy/MM/dd")
     private LocalDateTime created;
+    //@JsonFormat(pattern = "yyyy/MM/dd")
     private LocalDateTime modified;
     private boolean completed;
     public ToDo(){

@@ -6,6 +6,8 @@ import com.han.todo.repository.CommonRepository;
 import com.han.todo.validation.ToDoValidationError;
 import com.han.todo.validation.ToDoValidationErrorBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
@@ -42,7 +44,8 @@ public class ToDoController {
                 build();
     }
     @RequestMapping(value="/todo", method = {RequestMethod.POST, RequestMethod.PUT})
-    public ResponseEntity<?> createToDo(@Valid @RequestBody ToDo toDo, Errors errors){
+    public ResponseEntity<?> createToDo(@Valid @RequestBody @DateTimeFormat(pattern="MM/dd/yyyy") ToDo toDo, Errors errors){
+
         if (errors.hasErrors()) {
             return ResponseEntity.badRequest().
                     body(ToDoValidationErrorBuilder.fromBindingErrors(errors));
@@ -51,7 +54,11 @@ public class ToDoController {
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().
                 path("/{id}")
                 .buildAndExpand(result.getId()).toUri();
-        return ResponseEntity.created(location).build();
+
+        //return ResponseEntity.created(location).build();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("location",location.toString());
+        return new ResponseEntity(result,headers,HttpStatus.OK);
     }
     @DeleteMapping("/todo/{id}")
     public ResponseEntity<ToDo> deleteToDo(@PathVariable String id){
